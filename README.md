@@ -89,3 +89,28 @@ Get-Command 搜索的是命令本身,并且可以使用-verb -noun -type 指定�
 
 # 撇开脚本，说说命令(command)
 
+命名惯例：
+
+* cmdlet 是PowerShell中的命令行工具,基于.net框架编写
+* function 与cmdlet功能类似，不同之处在于，使用PowerShell自己的脚本语言编写
+* workflow 区别于前两者，是特定环境中（PowerShell workflow系统）的function
+* application 是各种外部可执行文件（多为.exe），例如 ping ipconfig
+* command 是前面所有的统称
+
+> cmdlet 遵循 动词-名词（verb-noun）的命名方式
+> 不是所有的动词，都是真正意义上的动词，例如 New-  Where-
+
+进阶玩法：
+
+* 使用别名
+* 使用 Export-Alias Import-Alias 定制专属别名体系
+* **尽量避免**使用自定义别名，会给他人以及后期使用上带来诸多不便
+* 参数可截断
+* 参数有别名 (get-command get-eventlog | select -ExpandProperty parameters).computername.alias
+* 参数名可省略 (位置参数)
+
+可以 Show-Command <cmdlet>，调用图形界面填写参数，避免语法错误
+
+
+
+
