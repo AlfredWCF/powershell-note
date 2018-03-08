@@ -113,7 +113,30 @@ Get-Command 搜索的是命令本身,并且可以使用-verb -noun -type 指定�
 
 PowerShell 在后台运行Cmd.exe 所以支持例如ping ipconfig的外部工具
 
+*********************************************
+
 # Providers
+
+Get-PSProvider
+
+PSProvider 是PowerShell中的适配器，将数据存储（Data Storage）以磁盘驱动器（Disk Drive）的形式展现出来。
+
+不同的PSProvider提供不同的能力，最常见的:
+
+* ShouldProcess 该PSProvider可使用-WhatIf -Confim参数进行测试
+* Filder 该PSProvider中的cmdlet支持-Filter参数
+* Credentials 连接数据存储时，需要提供凭证 -credentials
+* Transactions 支持事务处理
+
+通过PSProvider创建并以磁盘驱动器形式暴露出来的Disk Driver 叫做PS Drive
+通过各种cmdlets操作PS Drive中的数据。Get-Item[Property] Move-Item[Property] Copy-Item[Property] New-Item[Property] Rename-Item[Property]等等。这些cmdlets基本上都**带有item字样**。
+
+-Path vs -LiteralPath:
+在PSDrive中进行导航时，问号（?）星号（*）可以作为通配符使用。在文件系统中，这是没有问题的，因为文件/文件夹的命名中不允许出现问号和星号。使用参数 -LiteralPath，其中的特殊字符则不会被解释成通配符
+
+*******************************************************
+
+# Pipeline
 
 
 
