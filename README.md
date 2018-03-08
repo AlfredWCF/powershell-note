@@ -109,7 +109,11 @@ Get-Command 搜索的是命令本身,并且可以使用-verb -noun -type 指定�
 * 参数有别名 (get-command get-eventlog | select -ExpandProperty parameters).computername.alias
 * 参数名可省略 (位置参数)
 
-可以 Show-Command <cmdlet>，调用图形界面填写参数，避免语法错误
+可以 Show-Command <cmdlet>，调用图形界面填写参数，生成调用参数，避免语法错误。当遇到**不知所以**的error时(大多是语法错误)，可以先用Show-Command 命令生成完整的调用参数，重新运行命令。
+
+PowerShell 在后台运行Cmd.exe 所以支持例如ping ipconfig的外部工具
+
+# Providers
 
 
 
