@@ -5,6 +5,9 @@ powershell learn note
 [Learn Windows PowerShell in a Month of Lunches, Second Edition](https://www.manning.com/books/learn-windows-powershell-in-a-month-of-lunches-second-edition)
 [Learn PowerShell Toolmaking in a Month of Lunches](https://www.manning.com/books/learn-powershell-toolmaking-in-a-month-of-lunches)
 
+学习路线<https://jdhitsolutions.com/blog/essential-powershell-resources/>
+相关书籍<https://jdhitsolutions.com/blog/books-and-training/>
+
 其它一些资料
 [powershell deep dives]http://pdf.th7.cn/down/files/1312/PowerShell%20Deep%20Dives.pdf
 
@@ -138,6 +141,10 @@ PSProvider 是PowerShell中的适配器，将数据存储（Data Storage）以�
 
 # Pipeline
 
+与传统管道命令的不同在于，PowerShell管道中传递的对象
+    Get-Process | Get-Member
+    Get-Process | Export-Csv proc.csv
 
+结合管道命令使用Export-命令，将特定信息导出到文件
 
 
