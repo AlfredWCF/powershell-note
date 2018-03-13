@@ -47,6 +47,7 @@ powershell是如何解决这最后一公里的？
 * 如何组合使用不同的命令实现复杂功能？
 
 获取关于event log 的相关命令
+
         Get-Help -Name *log*
         Get-Help *event*
 
@@ -57,12 +58,15 @@ Get-Command 搜索的是命令本身,并且可以使用-verb -noun -type 指定�
         Get-Help Get-EventLog
 
 名称
+
         Get-EventLog
     
 摘要
+
         Gets the events in an event log, or a list of the event logs, on the local or remote computers.
 
 语法
+
         Get-EventLog [-LogName] <String> [[-InstanceId] <Int64[]>] [-After <DateTime>] [-AsBaseObject] [-Before <DateTime>] [-ComputerName <String[]>] [-Ent
         ryType {Error | Information | FailureAudit | SuccessAudit | Warning}] [-Index <Int32[]>] [-Message <String>] [-Newest <Int32>] [-Source <String[]>] 
         [-UserName <String[]>] [<CommonParameters>]
@@ -142,7 +146,8 @@ PSProvider 是PowerShell中的适配器，将数据存储（Data Storage）以�
 # Pipeline
 
 与传统管道命令的不同在于，PowerShell管道中传递的对象
-        Get-Process | Get-Member
+
+    Get-Process | Get-Member
         Get-Process | Export-Csv proc.csv
 
 结合管道命令使用Export-命令，将特定信息导出到文件
