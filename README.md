@@ -12,7 +12,7 @@ powershell learn note
 [powershell deep dives](http://pdf.th7.cn/down/files/1312/PowerShell%20Deep%20Dives.pdf)
 
 ## Command Line Interface shell ，即CLI shell
-powershell 本质上是一种shell（壳程序），区别与core（核心程序）。具体一点儿，是一种可以运行命令行工具(command-line utilities)的command-line shell(命令行壳程序)。
+powershell 本质上是一种shell（壳程序），区别于core（核心程序）。具体一点儿，是一种可以运行命令行工具(command-line utilities)的command-line shell(命令行壳程序)。
 作为一款优秀的shell，powershell具有脚本的能力
 
 ## Graphical User Interface shell 即 GUI shell
@@ -188,3 +188,29 @@ Pipeline可以连接各种操作
     Get-Service | Stop-Service -confirm
 
 类似的参数 -whatif 可以用在所有适用于 -confirm 的场景。
+
+*********************************************************************
+
+# 扩展命令
+
+
+类似于MMC（Microsoft Management Console）。当添加管理工具时，例如 Exchange Server、SqlServer Management Studio 等，这些工具的PowerShell扩展同时也被添加进来。
+并且，极有可能会添加一个 特定产品的管理Shell
+
+## 扩展：snap-ins
+
+PSSnapin 由一个或多个DLL文件，以及一个写有配置、帮助文本的XML文件组成。
+而且，PSSnapin越来越远离我们的生活。微软团队致力发展power shell扩展的另一种形式module
+
+## 扩展：modules
+
+modules扩展不需要像snap-ins一样 注册，Power shell去特定的位置寻找modules。
+路径地址存于环境变量中：
+
+    get-content env:PSModulePath
+
+PSModulePath如此重要。原因在于，借助于PSModulePath，Power shell可以自动发现所有的modules，并且在用用户调用某个命令时，自动加载该module。
+
+不同扩展中的重名命令，后加载的覆盖前者。命名新扩展中的命令时，应该为其添加前缀，避免重名。例如：get-ADUser，中的AD代表Activedirectory。
+否则，需要键入 "扩展名\命令"。
+
