@@ -9,7 +9,7 @@ powershell learn note
 相关书籍<https://jdhitsolutions.com/blog/books-and-training/>
 
 其它一些资料
-[powershell deep dives]http://pdf.th7.cn/down/files/1312/PowerShell%20Deep%20Dives.pdf
+[powershell deep dives](http://pdf.th7.cn/down/files/1312/PowerShell%20Deep%20Dives.pdf)
 
 ## Command Line Interface shell ，即CLI shell
 powershell 本质上是一种shell（壳程序），区别与core（核心程序）。具体一点儿，是一种可以运行命令行工具(command-line utilities)的command-line shell(命令行壳程序)。
@@ -187,4 +187,4 @@ Pipeline可以连接各种操作
 
     Get-Service | Stop-Service -confirm
 
-    
+类似的参数 -whatif 可以用在所有适用于 -confirm 的场景。
