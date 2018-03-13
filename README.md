@@ -148,8 +148,43 @@ PSProvider 是PowerShell中的适配器，将数据存储（Data Storage）以�
 与传统管道命令的不同在于，PowerShell管道中传递的对象
 
     Get-Process | Get-Member
-        Get-Process | Export-Csv proc.csv
+    Get-Process | Export-Csv proc.csv
 
-结合管道命令使用Export-命令，将特定信息导出到文件
+结合管道命令使用Export-命令，将特定信息导出到文件。
+从而，可以持久化一个快照；与别人共享快照；或者在之后的某个时间点查看快照；
 
+## 对比文件【对象】
 
+导出的文件，结合使用Compare-Object命令，可以实现文件对比的功能，即Diff。Diff同样也是Compare-Object的别名。
+本质上是对比两个对象。
+例如：
+
+    Compare-Object -ReferenceObject (Import-Clixml .\reference.xml) -DifferenceObject (Get-Process) -Property name
+
+可以制作各种baseline，例如：
+* services
+* processes
+* 系统配置
+* 用户组
+……等等
+基于这些baseline管理各台机器
+
+使用export-* 命令，导出文件时。其实是结合使用了ConvertTo- 以及 Out-File 命令
+
+    Get-Service | ConvertTo-Html | Out-File services.html
+
+## 影响等级（Are you sure ？）
+
+Pipeline可以连接各种操作
+
+    Get-Process -Name notepad++ | Stop-Process
+
+系统级别的命令，内部会对其定义一个影响等级。对应的，Power Shell有一个设置：
+
+    $ConfirmPreference
+
+当命令的影响等级等于或者高于当前配置时，shell会询问“Are you sure？”。你也可以强制Power Shell这么做：
+
+    Get-Service | Stop-Service -confirm
+
+    
