@@ -235,3 +235,46 @@ PSModulePath如此重要。原因在于，借助于PSModulePath，Power shell可
 
 # Pipeline，deeper
 
+CommandA | CommandB
+
+管道是如何传递参数的： pipeline parameter binding
+* pipeline input ByValue
+* pipeline input ByPropertyName
+* 
+
+## Pipleline input ByValue
+
+一个cmdlet，只允许存在一个参数通过ByValue的形式，接受管道传参。之前用到的关闭进程，就是这种形式
+
+    Get-Process -Name notepad++ | Stop-Process
+
+## Pipeline input ByPropertyName
+
+当尝试通过ByValue的方式传输管道参数失败时，Power shell 会改用第二种方式 Pipeline input ByPropertyName
+
+通过这种方式绑定参数，问题在于，它会匹配所有CommandA中的属性以及CommandB中的参数。
+比如，CommandA输出的对象包含有Name<String>和Value<String>参数时，便可以调用：
+
+    CommandA | new-alias
+
+因为new-alias的参数中，恰好包含同名同类型的ByPropertyName参数：
+
+    -Name <String>
+        Specifies the new alias. You can use any alphanumeric characters in an alias, but the first character cannot be a number.
+
+        必需?        true
+        位置?        0
+        默认值        None
+        是否接受管道输入?  True (ByPropertyName)
+        是否接受通配符?   false
+    ……
+    ……
+
+    -Value <String>
+        Specifies the name of the cmdlet or command element that is being aliased.
+
+        必需?        true
+        位置?        1
+        默认值        None
+        是否接受管道输入?  True (ByPropertyName)
+        是否接受通配符?   false
