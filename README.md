@@ -214,3 +214,24 @@ PSModulePath如此重要。原因在于，借助于PSModulePath，Power shell可
 不同扩展中的重名命令，后加载的覆盖前者。命名新扩展中的命令时，应该为其添加前缀，避免重名。例如：get-ADUser，中的AD代表Activedirectory。
 否则，需要键入 "扩展名\命令"。
 
+## profile script -- 预加载扩展
+
+添加文件$Home\Documents\WindowsPowerShell\profile.ps1
+文件中的命令会被预先执行，例如：
+
+    Add-PSSnapin SqlServerCmdletSnapin100
+    cd c:\
+    Write-Host 'hello ...[from moli administrator]'
+
+保存好文件后，再次打开Power shell时，会加载SqlServerCmdletSnapin100插件，并且输出：
+
+    hello ...[from moli administrator]
+    PS C:\> 
+
+注意需要设置脚本执行权限：
+    Set-ExecutionPolicy -ExecutionPolicy Unrestricted
+
+******************************************************************************************
+
+# Pipeline，deeper
+
