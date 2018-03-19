@@ -312,16 +312,19 @@ Get-WmiObject 命令的-ComputerName参数，不支持管道绑定。可以使�
 所有Out-命令，无法直接处理管道中的对象。它们会求助于格式化系统，然后按照Formating System返回的的指令输出内容。
 
 * formatting rule
+
 随着Power shell一同安装的.format.ps1xml文件中，内置了各种对象的格式化规则。
 
 规定了，以table还是list的方式显示，显示哪些属性，每一列的宽度等等
 
 * second formatting rule
+
 .format.ps1xml文件中找不到对应的格式化指令的，继而看，是否存在default display property set。例如types.ps1xml中的DefaultDisplayPropertySet定义。
 
 规定了显示对象的哪些属性。
 
 * the third formatting rule
+
 如果要显示的属性少于（包含）4个，则显示table；如果多于四个，则显示list
 
 ## 用户如何控制格式化
