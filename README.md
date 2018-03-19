@@ -329,3 +329,19 @@ Get-WmiObject 命令的-ComputerName参数，不支持管道绑定。可以使�
 
 ## 用户如何控制格式化
 
+* Format-Table
+
+合理使用-autoSize，-property，-groupBy，-wrap等参数，调整输出格式
+
+* Format-List
+* Format-Wide
+*  ...
+
+### 自定义列和list entries
+
+    Get-Process | Format-Table name,@{n='VM(MB)';e={$_.vm / 1MB -as [int]}} -AutoSize
+
+    Get-Process | Format-Table name,@{n='VM(MB)';e={$_.vm};formatstring='F2';align='left'} -AutoSize
+
+不同于Select-Ojbect命令中，hash表达式中还可以添加[formatstring](https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types)、align参数。
+
