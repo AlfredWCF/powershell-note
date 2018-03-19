@@ -244,7 +244,7 @@ CommandA | CommandB
 
 ## Pipleline input ByValue
 
-一个cmdlet，只允许存在一个参数通过ByValue的形式，接受管道传参。之前用到的关闭进程，就是这种形式
+一个cmdlet，只允许存在一个参数通过ByValue的形式，接受管道传参。之前用到的，就是这种形式
 
     Get-Process -Name notepad++ | Stop-Process
 
@@ -278,3 +278,25 @@ CommandA | CommandB
         默认值        None
         是否接受管道输入?  True (ByPropertyName)
         是否接受通配符?   false
+
+## 通过自定义属性，进行管道参数绑定
+当之前的两种管道参数绑定的形式，都不能满足需求时，可以使用hash表达式自定义参数，**注意命令中的各种写法**：
+
+    Get-Process TeamViewer | Select-Object -Property @{name='A';expression='ID'},@{label='B';e={$psitem.ProcessName}},@{n='C';e={$_.workingSet}}
+
+        A B                 C
+        - -                 -
+        1520 TeamViewer 33640448
+
+将上例中的A B C 参数，替换成CommandB中需要通过管道绑定的参数名即可
+
+## 还可以使用括号，或者点语法 $PSItem.Property
+
+Get-WmiObject 命令的-ComputerName参数，不支持管道绑定。可以使用括号的方式，传参：
+
+    Get-WmiObject -class Win32_BIOS -ComputerName (Get-Content .\computers.txt)
+
+更复杂一点儿的，需要展开某个属性，来满足指定参数的要求，注意-expand的用法：
+
+    Get-Service -computerName (Get-ADComputer -filter * -searchBase "ou=domain controllers,dc=company,dc=pri" | Select-Object -expand name)
+
