@@ -113,7 +113,7 @@ Get-Command 搜索的是命令本身,并且可以使用-verb -noun -type 指定�
 * 使用 Export-Alias Import-Alias 定制专属别名体系
 * **尽量避免**使用自定义别名，会给他人以及后期使用上带来诸多不便
 * 参数可截断
-* 参数有别名 (get-command get-eventlog | select -ExpandProperty parameters).computername.alias
+* 参数有别名 (get-command get-eventlog | select -ExpandProperty parameters).ComputerName.Aliases
 * 参数名可省略 (位置参数)
 
 可以 Show-Command <cmdlet>，调用图形界面填写参数，生成调用参数，避免语法错误。当遇到**不知所以**的error时(大多是语法错误)，可以先用Show-Command 命令生成完整的调用参数，重新运行命令。
