@@ -238,12 +238,13 @@ PSModulePath如此重要。原因在于，借助于PSModulePath，Power shell可
 
 # Pipeline，deeper
 
-CommandA | CommandB
+伪命令:
+    CommandA | CommandB
 
 管道是如何传递参数的： pipeline parameter binding
 * pipeline input ByValue
 * pipeline input ByPropertyName
-* 
+* ...
 
 ## Pipleline input ByValue
 
