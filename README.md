@@ -307,7 +307,7 @@ Get-WmiObject 命令的-ComputerName参数，不支持管道绑定。可以使�
 
 点语法，简化了展开属性的步骤
 
-    Stop-Service -Name (Get-Service *moli*).Name
+    Get-Service -computerName (Get-ADComputer -filter * -searchBase "ou=domain controllers,dc=company,dc=pri").Name
 
 ************************************************************************************
 
