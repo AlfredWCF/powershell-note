@@ -148,7 +148,7 @@ PSProvider 是PowerShell中的适配器，将数据存储（Data Storage）以�
 
 # Pipeline
 
-与传统管道命令的不同在于，PowerShell管道中传递的对象
+与传统管道命令的不同在于，PowerShell管道中传递的是对象
 
     Get-Process | Get-Member
     Get-Process | Export-Csv proc.csv
