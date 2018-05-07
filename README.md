@@ -139,7 +139,10 @@ PSProvider 是PowerShell中的适配器，将数据存储（Data Storage）以�
 通过各种cmdlets操作PS Drive中的数据。Get-Item[Property] Move-Item[Property] Copy-Item[Property] New-Item[Property] Rename-Item[Property]等等。这些cmdlets基本上都**带有item字样**。
 
 -Path vs -LiteralPath:
-在PSDrive中进行导航时，问号（?）星号（*）可以作为通配符使用。在文件系统中，这是没有问题的，因为文件/文件夹的命名中不允许出现问号和星号。使用参数 -LiteralPath，其中的特殊字符则不会被解释成通配符
+
+在PSDrive中进行导航时，问号（?）星号（*）可以作为通配符使用。在文件系统中，这是没有问题的，因为文件/文件夹的命名中不允许出现问号和星号。
+
+若在别的provider中使用特殊符号时不想被解释成通配符，使用-LiteralPath参数
 
 *******************************************************
 
