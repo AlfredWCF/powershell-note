@@ -354,3 +354,27 @@ Get-WmiObject 命令的-ComputerName参数，不支持管道绑定。可以使�
 
 不同于Select-Ojbect命令中，hash表达式中还可以添加[formatstring](https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types)、align参数。
 
+## OutPut格式化的数据
+
+格式化不是目的，output才是
+
+    Get-Process | Format-Wide | Out-Host
+
+    Out-Default
+    Out-File
+    Out-GridView
+    Out-Host
+    Out-Null
+    Out-Printer
+    Out-String
+
+out-default 等同于 out-host。
+
+Out-GridView比较特殊，不会经过formatting system。且不能与Format-命令连用。
+
+
+**********************************************************************************************
+
+# 过滤和比较 -- Filtering and comparisions
+
+
