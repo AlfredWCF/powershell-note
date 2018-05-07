@@ -40,7 +40,7 @@ powershell是如何解决这最后一公里的？
 
 # 强大的帮助系统
 
-在探索学习方面，虽然没有GUIs那样显而易见的强大，powershell的帮助系统为用户提供了强有力的保证。
+在探索学习方面，虽然没有GUIs那样显而易见的强大，powershell的帮助系统却也极尽全力的为用户提供了强有力的保证。
 
 * 处理某个问题该用哪个命令，如何使用？
 * 遇到error怎么处理？
@@ -51,7 +51,7 @@ powershell是如何解决这最后一公里的？
         Get-Help -Name *log*
         Get-Help *event*
 
-Get-Help 搜索的是命令的 help topics,几乎每个命令都包含help topics
+Get-Help 显示关于**powershell命令**的 help topics,几乎每个命令都包含help topics
 Get-Command 搜索的是命令本身,并且可以使用-verb -noun -type 指定动词、名词、命令类型(cmdlet/func)
 
 从结果列表中，找到可能会用到的命令，进而查看命令帮助
