@@ -25,7 +25,7 @@ windows Explorer 操作系统，是图形界面shell。
 powershell之前，可以使用VBScript编写脚本，通过脚本导入编辑好的用户资料（CSV文件），快速创建用户。
 
 那么问题来了，VBScript功能够用，何必开发powershell？
-  原因在于，微软各种工具的开发者，需要提前为VBScript预留访问点，用来hook up
+  原因在于，微软各种工具的开发者，需要提前为VBScript预留访问点，用来hook up。
   这个问题，被powershell的总架构师effrey Snover称作“最后一公里”
 
 powershell是如何解决这最后一公里的？
