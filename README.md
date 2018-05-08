@@ -377,4 +377,15 @@ Out-GridView比较特殊，不会经过formatting system。且不能与Format-�
 
 # 过滤和比较 -- Filtering and comparisions
 
+区别 filter left & filter right
+
+    # 左侧过滤
+    Get-Service -Name a*
+    # 右侧过滤
+    Get-Service | Where-Object {$PSItem.Status -eq 'running'}
+
+尽可能的使用左侧过滤，
+
+## Filter left
+
 
