@@ -471,5 +471,9 @@ Get-Help about_Remote_Troubleshooting 获取更多信息。
 
 ## 使用 Invoke-Command 进行一对多远程控制
 
+该命令默认的最大并发数为32，若调用时，目标计算机超过32台机器，剩下的则会进入队列，顺序执行。当然，这个并发限制可以修改。
 
+    Invoke-Command -command { dir } -computerName (Get-ADComputer -filter * -searchBase "ou=Sales,dc=company,dc=pri" | Select-Object -expand Name )
+
+Get-ADComputer命令只有在Windows Server 2008或者装有Remote Server Administration Tools的Win7以上版本才能使用。
 
