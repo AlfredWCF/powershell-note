@@ -2,14 +2,16 @@
 powershell learn note
 
 出版于Manning Publications，相关的Month of Lunches系列还有好多
+
 [Learn Windows PowerShell in a Month of Lunches, Second Edition](https://www.manning.com/books/learn-windows-powershell-in-a-month-of-lunches-second-edition)
+
 [Learn PowerShell Toolmaking in a Month of Lunches](https://www.manning.com/books/learn-powershell-toolmaking-in-a-month-of-lunches)
 
 学习路线<https://jdhitsolutions.com/blog/essential-powershell-resources/>
 相关书籍<https://jdhitsolutions.com/blog/books-and-training/>
 
 其它一些资料
-[powershell deep dives](http://pdf.th7.cn/down/files/1312/PowerShell%20Deep%20Dives.pdf)
+[powershell deep dives](http://pdf.th7.cn/down/files/1312/PowerShell%20Deep%20Dives.pdf)  [微软在线文档](https://docs.microsoft.com/en-us/powershell/scripting/powershell-scripting?view=powershell-5.1)
 
 ## Command Line Interface shell ，即CLI shell
 powershell 本质上是一种shell（壳程序），区别于core（核心程序）。具体一点儿，是一种可以运行命令行工具(command-line utilities)的command-line shell(命令行壳程序)。
@@ -432,4 +434,42 @@ Out-GridView比较特殊，不会经过formatting system。且不能与Format-�
 
 
 **********************************************************************************************************
+
+# Remote control
+
+注：在6.0版本引入，可以通过[SSH](https://docs.microsoft.com/en-us/powershell/scripting/core-powershell/ssh-remoting-in-powershell-core?view=powershell-6)实现跨平台Remoting调用。
+
+不同于其它使用Telnet 或者 SSH的远程技术，Powershell使用的是新的基于http(s)的通信协议 Web Services for Management（WS-MAN）。
+WinRM（Windows Remote Management）服务则是基于WS-MAN的实现。WinRM服务随PowerShell一同安装，且默认开启（Windows Server 2012以上操作系统）
+
+原理：远程机器执行完命令，将Output序列化成XML，通过http(s)传输给客户端，客户端反序列化后获得结果对象。
+
+## WinRM概览
+
+远程机器上，powershell在WinRM中注册成endpoint。当WinRM接收到Remoting traffic时，根据其标识，找到对应的endpoint，并将此远程控制命令路由给对应的程序。
+也就是说，WinRM只管分发，而不仅仅是为powershell remoting服务。
+
+powershell把在WinRM中注册的endpoint，叫做session configurations
+
+运行 Enable-PSRemoting 命令，即可完成包含WinRM在内的配置。当有许多台机器需要开启powershell remoting时，可以使用GPO（Group Policy object）
+
+Get-Help about_Remote_Troubleshooting 获取更多信息。
+
+## one-to-one remoting
+
+    # 连接域环境中的机器
+    Enter-PSSession -ComputerName server2
+    # 使用凭据连接到开放互联网上的特定服务器，需要添加TruntedHosts配置（Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value '172.20.123.220[,another host]'）
+    Enter-PSSession -ComputerName 172.20.123.220 -Credential 'DESKTOP-AAKT5OA\Jack Chen'
+
+还可通过ssl连接到服务器，更多信息参考[Access remote computers](https://github.com/devops-collective-inc/secrets-of-powershell-remoting/blob/master/manuscript/accessing-remote-computers.md)
+
+需要注意：
+
+* 进行remoting时，powershell profile script不会被执行
+* 用户依然受限于远程计算机的执行策略，比如远程计算机上 Get-ExecutionPolicy后结果为 Restricted。那么远程计算机上此时限制脚本运行。
+
+## 使用 Invoke-Command 进行一对多远程控制
+
+
 
