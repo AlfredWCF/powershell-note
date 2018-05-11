@@ -31,7 +31,7 @@ powershell之前，可以使用VBScript编写脚本，通过脚本导入编辑�
   这个问题，被powershell的总架构师effrey Snover称作“最后一公里”
 
 powershell是如何解决这最后一公里的？
-  微软继续构建GUI控制台，其所有的功能的调用，改为执行powershell命令。
+  微软继续构建GUI控制台，其所有工具的所有功能的调用，改为执行工具的powershell命令。
   the Windows world will start to split into two groups:administrators who can use PowerShell，and those who can’t.
 
 开始之前，请确保使用admin权限运行powershell ISE
@@ -477,3 +477,44 @@ Get-Help about_Remote_Troubleshooting 获取更多信息。
 
 Get-ADComputer命令只有在Windows Server 2008或者装有Remote Server Administration Tools的Win7以上版本才能使用。
 
+-SessionOption参数可以指定remoting时的选项
+
+关于remoting的更多信息，查阅<https://github.com/devops-collective-inc/secrets-of-powershell-remoting>
+
+
+**********************************************************************************************************
+
+
+# WMI（Windows Management Instrumentation）
+
+这里只讲Powershell中如何使用WMI，以便来完成PowerShell鞭长莫及的事情。
+
+    Compare-Object -DifferenceObject (Get-CimInstance -Namespace root/CIMV2 -ClassName Win32_Service | Select-Object Name)  -ReferenceObject (Get-Service | Select-Object Name) -Property name -IncludeEqual
+
+上面例子可以看出。其实，随着powershell的不断更新优化，需要使用WMI的场景越来越少。
+
+## namespace & classname
+
+WMI 通过 命名空间 和 类名 来组织所有Component（组件）
+
+* 命名空间下包含特定类别的产品或技术
+* 类名指管理组件（component）
+
+通过namespace和classname可以拿到所有的管理组件，并且对其执行各种方法调用。
+看上去很美好，事实却并非如此。否则，也就没有powershell什么事儿了。
+
+## 一些坏消息
+
+关于WMI的编程标准有不少，但各个产品组如何实现class，以及是否提供文档，完全处于失控状态。
+
+当IIS team在实现 IIS6 时，为各种元素定义了并行的class 例如：
+
+一个网站的实现分多个类，其中一个包含只读属性；另一个类包含可写属性。尤其是当缺乏文档时，对使用者来说，简直就是受罪。
+
+> A website, for example, could be represented by one class that had the typical read-only properties, but also by a second class that had writable properties you could change.
+
+微软没有规定必须使用WMI，这与开篇说的：
+
+> 微软继续构建GUI控制台，其所有工具的所有功能的调用，改为执行工具的powershell命令。
+
+刚好是背道而驰。
