@@ -491,7 +491,7 @@ Get-ADComputer命令只有在Windows Server 2008或者装有Remote Server Admini
 
     Compare-Object -DifferenceObject (Get-CimInstance -Namespace root/CIMV2 -ClassName Win32_Service | Select-Object Name)  -ReferenceObject (Get-Service | Select-Object Name) -Property name -IncludeEqual
 
-上面例子可以看出。其实，随着powershell的不断更新优化，需要使用WMI的场景越来越少。
+其实，随着powershell的不断更新优化，需要使用WMI的场景越来越少。尽管powershell命令的底层有可能依然是通过WMI来实现的。
 
 ## namespace & classname
 
@@ -513,8 +513,73 @@ WMI 通过 命名空间 和 类名 来组织所有Component（组件）
 
 > A website, for example, could be represented by one class that had the typical read-only properties, but also by a second class that had writable properties you could change.
 
-微软没有规定必须使用WMI，这与开篇说的：
+微软没有规定必须使用WMI，必须暴露所有组件。这与开篇说的：
 
 > 微软继续构建GUI控制台，其所有工具的所有功能的调用，改为执行工具的powershell命令。
 
 刚好是背道而驰。
+
+## WMI or CIM cmdlets
+
+* WMI cmdlets 使用RPCs（Remote Procedure calls）协议
+* CIM cmdlets 使用WS-MAN协议
+
+微软不会继续投资WMI cmdlets，鼓励使用CIM cmdlets
+
+    gwmi -class win32_bios -computer localhost |
+        format-table `
+         @{l='ComputerName';e={$_.__SERVER}},
+         @{l='BIOSSerial';e={$_.SerialNumber}},
+         @{l='OSBuild';e={
+           gwmi -class win32_operatingsystem -comp $_.__SERVER |
+           select-object -expand BuildNumber}
+         } -autosize
+
+    Invoke-Command -ScriptBlock { Get-CimInstance -ClassName win32_process } -ComputerName 172.20.123.220 -Credential 'DESKTOP-AAKT5OA\Jack Chen'
+
+推荐阅读：《PowerShell and WMI》 by Richard Siddaway
+
+
+*************************************************************************************************************************************
+
+# 多任务 Multitasking with background jobs
+
+## 异步执行
+
+* 在后台执行命令时，若需要交互输入。看不到输入请求，命令执行将终止。
+* 异步执行命令，无法直接看到错误信息
+* 无法直接看到执行结果，需要取回
+
+## Local job（本地后台任务）
+
+    start-job -ScriptBlock { dir }
+
+虽然本地job，在本地运行。但需要启用Remoting
+
+某些命令具有-asjob 参数
+
+    Get-Command -ParameterName asjob
+
+    Get-WmiObject -Class win32_process -ComputerName 172.20.123.220 -Credential 'DESKTOP-AAKT5OA\Jack Chen' -AsJob
+
+    Invoke-Command -ScriptBlock { Get-Process } -ComputerName 172.20.123.220 -Credential 'DESKTOP-AAKT5OA\Jack Chen' -AsJob
+
+Invoke-Command与其它命令的不同之处在于。它所指定的命令，是在各远程计算机上并行执行的。这样，可以合理利用资源，提高性能。
+
+## 获取任务结果
+
+    # 所有Job
+    Get-Job | Format-List
+
+    # 获取结果
+    Receive-Job -Id 18
+
+获取结果，需要指定某个任务（或子任务）。并且，不可重复获取（可以使用-keep参数，持续保存结果）。
+Get-Job中的HasMoreData属性，表明了是否存有结果。而ChildJobs属性，显示了子任务的个数（每个Top job 至少有一个）。
+
+## Scheduled Jobs
+
+延伸阅读[Scheduled Jobs 和 Scheduled Tasks](https://blogs.technet.microsoft.com/heyscriptingguy/2013/11/23/using-scheduled-tasks-and-scheduled-jobs-in-powershell/)
+
+
+
