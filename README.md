@@ -581,5 +581,172 @@ Get-Job中的HasMoreData属性，表明了是否存有结果。而ChildJobs属�
 
 延伸阅读[Scheduled Jobs 和 Scheduled Tasks](https://blogs.technet.microsoft.com/heyscriptingguy/2013/11/23/using-scheduled-tasks-and-scheduled-jobs-in-powershell/)
 
+    Register-ScheduledJob -Name DailyProcList2 -ScriptBlock { Get-Process } -Trigger (New-JobTrigger -Daily -At 2am) -ScheduledJobOption (New-ScheduledJobOption -WakeToRun -RunElevated)
 
+    Get-Command -Module psscheduledjob
+
+ScheduledJob 会生成 普通的job
+
+？？？ win10 ise中测试，不触发job
+
+
+*******************************************************************************************************************************************************
+
+
+# Working with many objects，one at a time
+
+## “batch” cmdlets
+
+    get-service | stop-service -passthru
+
+cmdlet命令本身具有批处理功能，并且推荐使用这种方式处理mass management
+
+## WMI 对象
+
+    # 之前的调用方式
+    Get-WmiObject -ClassName Win32_NetworkAdapterConfiguration | Invoke-WmiMethod -Name enabledhcp
+    # 现在使用点语法调用
+    (Get-WmiObject -ClassName Win32_NetworkAdapterConfiguration).enabledhcp()
+
+统一使用Invoke-WmiMethod方法（或点语法）调用WMI对象的方法。
+
+## 枚举对象
+
+    commandA | foreach-object -process { ... }
+    # % 代表 foreach-object
+    gwmi win32_service -fi "name = 'BITS'" | % {$_.change($null,$null,$null,$null,$null,$null,$null,"P@ssw0rd") }
+
+## 条条大路通罗马
+
+    Get-Service -name *B* | Stop-Service
+    Get-Service -name *B* | ForEach-Object { $_.Stop() }
+    Get-WmiObject Win32_Service -filter "name LIKE '%B%' | Invoke-WmiMethod -name StopService
+    Get-WmiObject Win32_Service -filter "name LIKE '%B%' | ForEach-Object { $_.StopService() }
+    Stop-Service -name *B*
+
+
+*****************************************************************************************************************************************************************
+
+
+# 关于安全
+
+自从比尔盖茨提出了 “Trustworthy Computing Initiative”， 每个产品组都会配置有一个软件安全专家。
+powershell从设计开始，就考虑了安全性因素。
+
+* powershell不处理任何permission，所有的执行权限，都依赖于运行powershell所使用的账户
+* execution policy 和 code signing 防止用户因被骗，而运行破坏性指令
+* 可以通过Set-ExecutionPolicy或GPO修改执行权限
+* 脚本签名有效追踪来源，判断可靠性
+* 脚本后缀为 .ps1 双击时，默认打开编辑器，不执行脚本，防止误操作
+* shell中键入脚本文件名时，不执行脚本文件，防止 hijacking
+
+
+*******************************************************************************************************************************************************************
+
+
+# Variables
+
+    $var = “Server1”
+
+* 无需声明
+* 弱类型
+* ${My Variable} --变量名可包含空格
+* 双引号解析 $var = 'hello'; Write-Host "${var} world"
+* 转义符号为backtick(`)  $computerName = 'SERVER2'; Write-Host "`$computerName`ncontains`n$computername"
+
+## deal with array   
+    
+    $computers = 'db1', 'db2'
+    Write-Host $computers[0]
+    Write-Host $computers[-1]
+
+automatic unrolling 自动展开。对数组调用方法/属性时，若不存在该方法，则调用其数组元素的方法。
+
+    $computers.toupper()
+
+## subexpression
+
+    $services = Get-Service
+    out-host "The first name is $($services[0].name)"
+
+双引号中可以解析变量，但若要调用方法，则需要用到subexpression  
+
+$(...) 括号中的表达式会被当成脚本执行
+
+## 声明变量类型
+
+    PS C:\> $number = Read-Host "Enter a number"
+    Enter a number: 100
+
+    PS C:\> $number * 10
+    100100100100100100100100100100
+
+未指定类型时，输入被默认为字符串，未达到预期效果。
+
+可以通过指定类型来解决上述问题：
+
+    PS C:\> [int]$number = Read-Host "Enter a number"
+    Enter a number: 100
+
+    PS C:\> $number | gm
+
+
+    TypeName:System.Int32
+
+常用的类型有：
+
+* [int]
+* [single] or [double]
+* [string]
+* [char]
+* [xml]
+* [adsi]
+
+
+************************************************************************************************************************
+
+
+# Input and output
+
+## read-host
+
+用来获取用户输入，console host中若想给用户弹对话框，则用下面命令。
+
+    [void][System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic')
+
+    $computername = [Microsoft.VisualBasic.Interaction]::InputBox('Enter a computer name','Computer Name','localhost')
+
+## write-host
+
+因为其它命令的存在，这个命令很少用到。只是在某些特殊的场合，例如，用特别的颜色显示信息，来引起注意。
+
+* Write-Debug
+* Write-Error
+* Write-Information
+* Write-Verbose
+* Write-Warning
+
+这些命令是否输出到host是可以配置的，例如$DebugPreference控制是否输出调试信息。
+
+## write-output
+
+区别write-output 与 write-host：
+
+    Write-Output 'Hello' | Where-Object { $PSItem.length -gt 10 }
+
+    Write-Host 'Hello' | Where-Object { $PSItem.length -gt 10 }
+
+write-output 是把对象输出到管道。而write-host是把对象输出到host的标准输出设备。
+
+当你在powershell 命令行输入‘Hello’时，默认自动执行write-output命令，将对象输出到管道；进而执行out-default；最终执行out-host命令。
+
+
+*******************************************************************************************************************************
+
+
+# Session
+
+通过Session，复用远程连接
+
+    Get-PSSession -Name 'db1' | Enter-PSSession
 
