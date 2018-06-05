@@ -1,9 +1,11 @@
 # 写在前面
 powershell learn note
 
-出版于Manning Publications，相关的Month of Lunches系列还有好多
+出版于Manning Publications
 
-[Learn Windows PowerShell in a Month of Lunches, Second Edition](https://www.manning.com/books/learn-windows-powershell-in-a-month-of-lunches-second-edition)
+本篇基于[Learn Windows PowerShell in a Month of Lunches, Second Edition](https://www.manning.com/books/learn-windows-powershell-in-a-month-of-lunches-second-edition)
+
+相关的Month of Lunches系列还有好多
 
 [Learn PowerShell Toolmaking in a Month of Lunches](https://www.manning.com/books/learn-powershell-toolmaking-in-a-month-of-lunches)
 
