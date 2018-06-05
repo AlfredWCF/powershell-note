@@ -211,6 +211,8 @@ PSSnapin 由一个或多个DLL文件，以及一个写有配置、帮助文本�
 
 ## 扩展：modules
 
+[如何写modules](https://msdn.microsoft.com/en-us/library/dd878310(v=vs.85).aspx)
+
 modules扩展不需要像snap-ins一样 注册，Power shell去特定的位置寻找modules。
 路径地址存于环境变量中：
 
