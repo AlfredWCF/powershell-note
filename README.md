@@ -481,6 +481,30 @@ Get-ADComputer命令只有在Windows Server 2008或者装有Remote Server Admini
 
 关于remoting的更多信息，查阅<https://github.com/devops-collective-inc/secrets-of-powershell-remoting>
 
+## 自定义endpoint -- Session Configuration
+
+主要通过两个命令来配置：
+    New-PSSessionConfigurationFile
+    Register-PSSessionConfiguration
+
+既然是Configuration，就可以对该endpoint做各种限制。
+
+## Enable multihop remoting
+
+    Enable-WSManCredSSP
+
+多跳remoting就是，从客户端到remotingA，再从remotingA到remotingB
+
+## Remoting authentication
+
+remoting使用的是双向验证机制。
+
+1. 默认状态下，双向验证机制是自动的，前提是，远程机器需要在同一域中（或者信任的域中），且使用其DNS能解析的机器名（而非IP地址或其它）。
+
+2. 可以通过SSL验证
+
+3. 可以配置TrustedHosts
+
 
 **********************************************************************************************************
 
@@ -750,3 +774,96 @@ write-output 是把对象输出到管道。而write-host是把对象输出到hos
 
     Get-PSSession -Name 'db1' | Enter-PSSession
 
+使用Invoke-Command命令，结合Session，进行远程调用。不使用各命令的ComputerName参数指定目标机器。
+
+* 复用远程连接对象，持续保持连接
+* 使用唯一的，预定义的端口进行通信。方便防火墙设置
+* 远程机器并行执行命令，合理利用资源
+* 某些命令如 Get-WmiObject，不支持-Session参数，而Invoke-Command则可以复用Session
+
+## 隐式remoting：importing a session
+
+无需安装各种管理工具，便可使用所有的命令。（前提是在别的机器上已经安装过）
+
+    Get-Help Import-PSSession
+
+摘要
+    Imports commands from another session into the current session.
+
+导入module后，便可以在本地调用其中的命令。
+
+    PS C:\> $session = new-pssession -comp server-r2 
+    PS C:\> invoke-command -command { import-module activedirectory } -session $session
+    PS C:\> import-pssession -session $session -module activedirectory -prefix rem
+
+其实module没有被真正的导入到本地。当调用其中的命令时，该命令也是在远程机器上执行完后，将结果返回。
+
+## Disconnected session
+
+在Computer1中登陆，新建某个远程server的session后。从Computer2中登陆，依然可以获取到之前的session。（前提是使用同一用户登陆）
+
+例如，当前登陆在Computer1上：
+    New-PSSession -ComputerName db4
+
+    Get-PSSession -name db4 | Disconnect-PSSession
+
+现在，换一台机器登陆：
+    Get-PSSession -name db4 | Connect-PSSession
+
+关于未连接Session的存活时间，Session的所有相关配置，到WSMan：驱动器中更改。
+
+
+***************************************************************************************************************
+
+
+# Scripting
+
+    Get-Help about_scripts -full
+
+包含了如何写脚本，如何声明参数，如何写帮助文档，如何本地/远程调用脚本等等...
+
+    about_Functions
+    about_Functions_Advanced
+
+添加 [CmdletBinding()] attribute后，使用自定义 脚本/函数 时， 可以更接近native cmdlet
+
+可以通过属性，指定参数是否必填，指定参数的别名，限定参数的范围等
+    Get-Help about_Functions_advanced_parameters
+    Get-Help about_Functions_CmdletBindingAttribute
+
+
+****************************************************************************************************************
+
+
+# Using regular expression
+
+    'don' -match 'd[\w]n'
+    'DON' -cmatch 'd[\w]n'
+
+    Select-String -Path "*.xml" -Pattern "patten string"
+
+*****************************************************************************************************************
+
+
+# Some Tips
+
+* powershell profiles
+* customizing the prompt
+* Tweaking color
+* operators: -as, -is, -replace, -jion, -split, -in, -contains
+* string date 等对象本身，包含了各种用于操作的方法的实现
+* $PSDefaultParameterValues 可以配置参数默认值
+
+调用 script block：
+    $block = {...}
+    &$block
+
+    Get-Help about_script_blocks
+
+
+******************************************************************************************************************
+
+
+# PowerShell cheat sheet
+
+书中28章，有一个汇总。遇到特殊的标点符号、记不清的比较符号等，可以先到这里查阅。
